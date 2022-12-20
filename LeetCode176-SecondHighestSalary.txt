@@ -1,0 +1,85 @@
+Table: Employee
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id is the primary key column for this table.
+Each row of this table contains information about the salary of an employee.
+ 
+
+Write an SQL query to report the second highest salary from the Employee table. If there is no second highest salary, the query should report null.
+
+The query result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+Output: 
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+Example 2:
+
+Input: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+Output: 
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| null                |
++---------------------+
+
+
+--CREATING THE Employee TABLE
+CREATE TABLE Employee(id INT PRIMARY KEY , salary INT);
+
+--INSERTING THE VALUES
+INSERT INTO Employee values(1,100),(2,200),(3,300),(4,200),(5,200);
+
+/*EXPLAINATION(Approach):
+	Approach 1: Using the max() function:
+
+	select max(salary) as SecondHighestSalary from employee where 
+	salary < (select max(salary) from employee); 
+
+	However , this solution is not a generic solution because when we need to find the nth highest salary we will have to nest query n times which can make it complicated.
+*/
+
+Approach 2: Using the limit and offset clauses in SQL
+	SELECT IFNULL(SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET 1),NULL) as SecondHighestSalary;
+
+	Explaination :
+	limit====The limit clause is used to select the limited number of records.
+	Example:
+	Suppose , we have 100 records in the table and we want only 10 we can use limit 50 to get the first 50 records .
+
+	offset === When we have to skip records.
+	Example:
+	 Suppose , we have to skip first 5 records we can use offset 5 along with limit.
+
+	 Approach 3 :
+	 Using the window functions 
+	 SELECT IFNULL((SELECT DISTINCT salary  FROM (SELECT salary,DENSE_RANK() OVER(ORDER BY salary DESC) as denseRank FROM Employee) temp WHERE temp.denseRank = 2) ,NULL) as SecondHighestSalary ;
+
+	 DENSE_RANK() doesnt skill the rank 
+
