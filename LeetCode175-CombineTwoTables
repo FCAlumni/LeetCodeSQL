@@ -1,0 +1,43 @@
+/*Table: Person
++-------------+---------+
+| Column Name | Type |
++-------------+---------+
+| PersonId | int |
+| FirstName | varchar |
+| LastName | varchar |
++-------------+---------+
+PersonId is the primary key column for this table.
+Table: Address
++-------------+---------+
+| Column Name | Type |
++-------------+---------+
+| AddressId | int |
+| PersonId | int |
+| City | varchar |
+| State | varchar |
++-------------+---------+
+AddressId is the primary key column for this table.
+Write a SQL query for a report that provides the following information for each
+person in the Person table, regardless if there is an address for each of those
+people:
+FirstName, LastName, City, State
+*/
+--CREATING THE TABLES
+CREATE TABLE Person(PersonId INT PRIMARY KEY , FirstName VARCHAR(20), LastName VARCHAR(20));
+CREATE TABLE Address(AddressId INT PRIMARY KEY , PersonId INT , city VARCHAR(20) , State varchar(20));
+
+--INSERTING THE VALUES INTO THE TABLES
+INSERT INTO Person VALUES(1,'Omkar','Hirave'),(2,'Abhinav','Vaidya'),(3,'Shubham','Shinde'),(4,'Sunil','Lonkar');
+INSERT INTO Address VALUES(1,6,'Pune','Maharastra'),(2,2,'Narhe','Maharastra'),(3,2,'Katraj','Maharastra');
+
+/*
+Explaination(Approach):
+  Since , we have been asked to each person in the Person table even if doesnt have address in the address 
+  table. So , here we can use left join to get all the records from the left and common records from the 
+  right table.
+  Additionally , we since PersonId is the common table in both the tables we can use PersonId to join both
+  the tables
+*/
+/*THE SOLUTION IS--- */
+SELECT FirstName , LastName , City , State 
+FROM Person as p LEFT JOIN Address as a ON a.PersonId=p.PersonId;
