@@ -65,8 +65,13 @@ Explanation: Max and Jim both have the highest salary in the IT department and H
 
 --------------------
 The solution is --
-SELECT d.name as Department , e.name as Employee , salary 
-FROM Employee_184 e INNER JOIN Department_184 d 
-ON e.departmentid = d.id
-WHERE (departmentid,salary)
-IN(SELECT departmentid ,MAX(salary) FROM employee GROUP BY departmentid);
+WITH cte as (
+SELECT d.name as Department , e.name as Employee , e.salary AS Salary , 
+DENSE_RANK() OVER(PARTITION BY d.name ORDER BY e.salary DESC) as rnk
+FROM Employee e INNER JOIN Department d 
+ON e.DepartmentId = d.id
+)
+
+SELECT Department , Employee , Salary
+FROM cte 
+WHERE rnk <= 1 ;
