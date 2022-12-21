@@ -1,0 +1,143 @@
+181. Employees Earning More Than Their Managers
+Easy
+1.9K
+189
+Companies
+SQL Schema
+Table: Employee
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
+| salary      | int     |
+| managerId   | int     |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the ID of an employee, their name, salary, and the ID of their manager.
+ 
+
+Write an SQL query to find the employees who earn more than their managers.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Employee table:
++----+-------+--------+-----------+
+| id | name  | salary | managerId |
++----+-------+--------+-----------+
+| 1  | Joe   | 70000  | 3         |
+| 2  | Henry | 80000  | 4         |
+| 3  | Sam   | 60000  | Null      |
+| 4  | Max   | 90000  | Null      |
++----+-------+--------+-----------+
+Output: 
++----------+
+| Employee |
++----------+
+| Joe      |
++----------+
+Explanation: Joe is the only employee who earns more than his manager
+______________________________________________
+
+mysql> CREATE TABLE Employee_181(id INT PRIMARY KEY , name VARCHAR(30) , salary INT , ManagerID INT);
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> desc Employee_181
+    -> ;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | int         | NO   | PRI | NULL    |       |
+| name      | varchar(30) | YES  |     | NULL    |       |
+| salary    | int         | YES  |     | NULL    |       |
+| ManagerID | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> INSERT INTO Employee_181 VALUES(1,'Joe',70000,3),(2,'Henry',80000,4);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+
+mysql> INSERT INTO Employee_181(id , name , salary) VALUES(3,'Sam',60000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Employee_181(id , name , salary) VALUES(4,'Max',90000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Employee_181;
++----+-------+--------+-----------+
+| id | name  | salary | ManagerID |
++----+-------+--------+-----------+
+|  1 | Joe   |  70000 |         3 |
+|  2 | Henry |  80000 |         4 |
+|  3 | Sam   |  60000 |      NULL |
+|  4 | Max   |  90000 |      NULL |
++----+-------+--------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT e.name as Employee FROM Employee_181 e INNER JOIN Employee_181 m ON e.id = m.ManagerId;
++----------+
+| Employee |
++----------+
+| Sam      |
+| Max      |
++----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT e.name as Employee FROM Employee_181 e INNER JOIN Employee_181 m ON e.id = m.ManagerId;
++----------+
+| Employee |
++----------+
+| Sam      |
+| Max      |
++----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT *FROM Employee_181 e INNER JOIN Employee_181 m ON e.id = m.ManagerId;
++----+------+--------+-----------+----+-------+--------+-----------+
+| id | name | salary | ManagerID | id | name  | salary | ManagerID |
++----+------+--------+-----------+----+-------+--------+-----------+
+|  3 | Sam  |  60000 |      NULL |  1 | Joe   |  70000 |         3 |
+|  4 | Max  |  90000 |      NULL |  2 | Henry |  80000 |         4 |
++----+------+--------+-----------+----+-------+--------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT *FROM Employee_181;
++----+-------+--------+-----------+
+| id | name  | salary | ManagerID |
++----+-------+--------+-----------+
+|  1 | Joe   |  70000 |         3 |
+|  2 | Henry |  80000 |         4 |
+|  3 | Sam   |  60000 |      NULL |
+|  4 | Max   |  90000 |      NULL |
++----+-------+--------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT *FROM Employee_181 e INNER JOIN Employee_181 m ON m.id = e.ManagerId;
++----+-------+--------+-----------+----+------+--------+-----------+
+| id | name  | salary | ManagerID | id | name | salary | ManagerID |
++----+-------+--------+-----------+----+------+--------+-----------+
+|  1 | Joe   |  70000 |         3 |  3 | Sam  |  60000 |      NULL |
+|  2 | Henry |  80000 |         4 |  4 | Max  |  90000 |      NULL |
++----+-------+--------+-----------+----+------+--------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT *FROM Employee_181 e INNER JOIN Employee_181 m ON m.id = e.ManagerId where e.salary >m.salary;
++----+------+--------+-----------+----+------+--------+-----------+
+| id | name | salary | ManagerID | id | name | salary | ManagerID |
++----+------+--------+-----------+----+------+--------+-----------+
+|  1 | Joe  |  70000 |         3 |  3 | Sam  |  60000 |      NULL |
++----+------+--------+-----------+----+------+--------+-----------+
+1 row in set (0.00 sec)
+
+/*Explaination(Approach):
+	Since ,we are having only one column we can apply a self join to get the expected output.*/
