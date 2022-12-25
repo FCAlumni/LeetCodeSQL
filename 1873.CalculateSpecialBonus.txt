@@ -1,0 +1,85 @@
+1873. Calculate Special Bonus
+Easy
+643
+49
+Companies
+SQL Schema
+Table: Employees
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| employee_id | int     |
+| name        | varchar |
+| salary      | int     |
++-------------+---------+
+employee_id is the primary key for this table.
+Each row of this table indicates the employee ID, employee name, and salary.
+ 
+
+Write an SQL query to calculate the bonus of each employee. The bonus of an employee is 100% of their salary if the ID of the employee is an odd number and the employee name does not start with the character 'M'. The bonus of an employee is 0 otherwise.
+
+Return the result table ordered by employee_id.
+
+The query result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Employees table:
++-------------+---------+--------+
+| employee_id | name    | salary |
++-------------+---------+--------+
+| 2           | Meir    | 3000   |
+| 3           | Michael | 3800   |
+| 7           | Addilyn | 7400   |
+| 8           | Juan    | 6100   |
+| 9           | Kannon  | 7700   |
++-------------+---------+--------+
+Output: 
++-------------+-------+
+| employee_id | bonus |
++-------------+-------+
+| 2           | 0     |
+| 3           | 0     |
+| 7           | 7400  |
+| 8           | 0     |
+| 9           | 7700  |
++-------------+-------+
+Explanation: 
+The employees with IDs 2 and 8 get 0 bonus because they have an even employee_id.
+The employee with ID 3 gets 0 bonus because their name starts with 'M'.
+The rest of the employees get a 100% bonus.
+
+
+--CREATING THE TABLE AND INSERTING THE TABLE VALUES
+Create table  Employees_1873 (employee_id int, name varchar(30), salary int);
+insert into Employees_1873 (employee_id, name, salary) values ('2', 'Meir', '3000');
+insert into Employees_1873 (employee_id, name, salary) values ('3', 'Michael', '3800');
+insert into Employees_1873 (employee_id, name, salary) values ('7', 'Addilyn', '7400');
+insert into Employees_1873 (employee_id, name, salary) values ('8', 'Juan', '6100');
+insert into Employees_1873 (employee_id, name, salary) values ('9', 'Kannon', '7700');
+
+--DISPLAYING THE TABLE VALUES
+SELECT * FROM Employees
++-------------+---------+--------+
+| employee_id | name    | salary |
++-------------+---------+--------+
+|           2 | Meir    |   3000 |
+|           3 | Michael |   3800 |
+|           7 | Addilyn |   7400 |
+|           8 | Juan    |   6100 |
+|           9 | Kannon  |   7700 |
++-------------+---------+--------+
+5 rows in set (0.00 sec)
+
+
+/*THe Solution is */
+SELECT employee_id ,
+CASE 
+    WHEN (name NOT LIKE 'M%' AND employee_id % 2 = 1) THEN Salary ELSE 0
+END AS bonus 
+FROM  Employees_1873
+ORDER BY employee_id
