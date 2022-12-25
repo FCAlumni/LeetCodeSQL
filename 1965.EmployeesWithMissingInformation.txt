@@ -1,0 +1,133 @@
+1965. Employees With Missing Information
+Easy
+433
+26
+Companies
+SQL Schema
+Table: Employees
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| employee_id | int     |
+| name        | varchar |
++-------------+---------+
+employee_id is the primary key for this table.
+Each row of this table indicates the name of the employee whose ID is employee_id.
+ 
+
+Table: Salaries
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| employee_id | int     |
+| salary      | int     |
++-------------+---------+
+employee_id is the primary key for this table.
+Each row of this table indicates the salary of the employee whose ID is employee_id.
+ 
+
+Write an SQL query to report the IDs of all the employees with missing information. The information of an employee is missing if:
+
+The employee's name is missing, or
+The employee's salary is missing.
+Return the result table ordered by employee_id in ascending order.
+
+The query result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Employees table:
++-------------+----------+
+| employee_id | name     |
++-------------+----------+
+| 2           | Crew     |
+| 4           | Haven    |
+| 5           | Kristian |
++-------------+----------+
+Salaries table:
++-------------+--------+
+| employee_id | salary |
++-------------+--------+
+| 5           | 76071  |
+| 1           | 22517  |
+| 4           | 63539  |
++-------------+--------+
+Output: 
++-------------+
+| employee_id |
++-------------+
+| 1           |
+| 2           |
++-------------+
+Explanation: 
+Employees 1, 2, 4, and 5 are working at this company.
+The name of employee 1 is missing.
+The salary of employee 2 is missing.
+
+--CREATING THE TABLE AND INSERTING THE VALUES
+Create table  Employees_1965 (employee_id int, name varchar(30));
+Create table  Salaries_1965 (employee_id int, salary int);
+insert into Employees_1965 (employee_id, name) values ('2', 'Crew');
+insert into Employees_1965 (employee_id, name) values ('4', 'Haven');
+insert into Employees_1965 (employee_id, name) values ('5', 'Kristian');
+insert into Salaries_1965 (employee_id, salary) values ('5', '76071');
+insert into Salaries_1965 (employee_id, salary) values ('1', '22517');
+insert into Salaries_1965 (employee_id, salary) values ('4', '63539');
+
+--DISPLAYING THE TABLE VALUES
+SELECT * FROM Employees_1965;
++-------------+----------+
+| employee_id | name     |
++-------------+----------+
+|           2 | Crew     |
+|           4 | Haven    |
+|           5 | Kristian |
+|           2 | Crew     |
+|           4 | Haven    |
+|           5 | Kristian |
++-------------+----------+
+6 rows in set (0.00 sec)
+
+SELECT * FROM Salaries_1965;
++-------------+--------+
+| employee_id | salary |
++-------------+--------+
+|           5 |  76071 |
+|           1 |  22517 |
+|           4 |  63539 |
+|           5 |  76071 |
+|           1 |  22517 |
+|           4 |  63539 |
++-------------+--------+
+6 rows in set (0.00 sec)
+
+/*The Solution is */
+--Solution 1 : For MySQL database
+SELECT e.employee_id AS employee_id 
+FROM Employees_1965 e  RIGHT JOIN Salaries_1965 s
+ON e.employee_id = s.employee_id
+WHERE e.employee_id IS NULL OR 
+s.employee_id IS NULL
+UNION
+SELECT s.employee_id AS employee_id
+FROM Employees_1965 e  LEFT JOIN Salaries_1965 s
+ON e.employee_id = s.employee_id
+WHERE e.employee_id IS NULL OR 
+s.employee_id IS NULL
+
+Solution 2 : For MS SQL Server 
+SELECT 
+CASE 
+	WHEN name IS NOT NULL THEN e.employee_id 
+	WHEN salary IS NOT NULL THEN s.employee_id
+END as employee_id
+FROM Employees_1965 e FULL OUTER JOIN Salaries_1965 s
+ON e.employee_id = s.employee_id
+WHERE e.employee_id IS  NULL 
+OR  s.employee_id IS  NULL
+ORDER BY employee_id
