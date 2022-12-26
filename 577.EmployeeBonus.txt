@@ -1,0 +1,118 @@
+577. Employee Bonus
+Description
+Table: Employee
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| empId       | int     |
+| name        | varchar |
+| supervisor  | int     |
+| salary      | int     |
++-------------+---------+
+empId is the primary key column for this table.
+Each row of this table indicates the name and the ID of an employee in addition to their salary and the id of their manager.
+ 
+
+Table: Bonus
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| empId       | int  |
+| bonus       | int  |
++-------------+------+
+empId is the primary key column for this table.
+empId is a foreign key to empId from the Employee table.
+Each row of this table contains the id of an employee and their respective bonus.
+ 
+
+Write an SQL query to report the name and bonus amount of each employee with a bonus less than 1000.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Employee table:
++-------+--------+------------+--------+
+| empId | name   | supervisor | salary |
++-------+--------+------------+--------+
+| 3     | Brad   | null       | 4000   |
+| 1     | John   | 3          | 1000   |
+| 2     | Dan    | 3          | 2000   |
+| 4     | Thomas | 3          | 4000   |
++-------+--------+------------+--------+
+Bonus table:
++-------+-------+
+| empId | bonus |
++-------+-------+
+| 2     | 500   |
+| 4     | 2000  |
++-------+-------+
+Output: 
++------+-------+
+| name | bonus |
++------+-------+
+| Brad | null  |
+| John | null  |
+| Dan  | 500   |
++------+-------+
+
+
+--CREATING THE TABLE AND INSERTING THE VALUES
+CREATE TABLE Employee_577(empid INT PRIMARY KEY , name VARCHAR(20) , supervisor INT , salary INT);
+
+INSERT INTO Employee_577(empid , name , salary) VALUES(3,'Brad',4000);
+INSERT INTO Employee_577(empid ,name , supervisor , salary)VALUES(
+1,'John',3,1000);
+INSERT INTO Employee_577(empid ,name , supervisor , salary)VALUES(
+2,'Dan',3,2000);
+INSERT INTO Employee_577(empid ,name , supervisor , salary)VALUES(
+4,'Thomas',3,4000);
+
+
+CREATE TABLE Bonus_577(empId INT PRIMARY KEY , bonus INT);
+INSERT INTO Bonus_577 VALUES(2,500);
+INSERT INTO Bonus_577 VALUES(4,2000);
+
+/*DISPLAYING THE TABLE VALUES*/
+SELECT * FROM Employee_577;
++-------+--------+------------+--------+
+| empid | name   | supervisor | salary |
++-------+--------+------------+--------+
+|     1 | John   |          3 |   1000 |
+|     2 | Dan    |          3 |   2000 |
+|     3 | Brad   |       NULL |   4000 |
+|     4 | Thomas |          3 |   4000 |
++-------+--------+------------+--------+
+4 rows in set (0.00 sec)
+
+SELECT * FROM Bonus_577;
++-------+-------+
+| empId | bonus |
++-------+-------+
+|     2 |   500 |
+|     4 |  2000 |
++-------+-------+
+2 rows in set (0.00 sec)
+
+/*The solution is */
+
+ SELECT e.name AS name , b.bonus as Bonus
+    -> FROM Employee_577 e LEFT JOIN Bonus_577 b
+    -> ON e.empId = b.empId
+    -> WHERE b.bonus < 1000 OR b.bonus IS NULL;
+
++------+-------+
+| name | Bonus |
++------+-------+
+| John |  NULL |
+| Dan  |   500 |
+| Brad |  NULL |
++------+-------+
+3 rows in set (0.01 sec)
